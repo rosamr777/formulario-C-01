@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 <title>VESSALIN · Formulario C-01</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Favicon integrado de Vessalin -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23a4271c' stroke-width='16'><path d='M60,30 C40,45 42,75 65,90 C48,98 40,120 48,145 C55,168 85,175 110,160 L150,40' stroke-linecap='round' stroke-linejoin='round'/><ellipse cx='75' cy='32' rx='28' ry='9'/></svg>">
 <style>
 :root{
   --rojo:#a4271c;--rojo-osc:#7f1e15;
@@ -17,7 +19,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
 .app-container {
   width: 100%;
-  max-width: 480px; /* Tamaño móvil */
+  max-width: 480px;
   background: var(--bg);
   position: relative;
   display: flex;
@@ -88,7 +90,7 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
 /* Push Notification */
 .push-notification {
   position: fixed;
-  top: -400px; /* <-- OCULTO MÁS ARRIBA PARA QUE NO SE VEA AL CARGAR */
+  top: -400px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -203,14 +205,13 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
         <div class="push-title">Mensaje entrante (Cifrado)</div>
         <div class="push-time">Ahora</div>
       </div>
-      <div class="push-text">Gracias, chavalín. Me daba igual la opción que firmaras, solo necesitaba tu firma en el sistema. Así podremos seguir con este proyecto tan maravilloso y preparar el terreno para traer a más como nosotros a la Tierra.<br><br>Te he mandado otro regalo. Sube a la azotea, que ahí está.</div>
+      <div class="push-text">Gracias, chavalín. Me daba igual la opción que firmaras, solo necesitaba tu firma en el sistema. Así podremos seguir con este proyecto tan maravilloso.<br><br>Te he mandado otro regalo. Sube a la azotea y acerca tu móvil a la credencial que encontrarás allí.</div>
     </div>
   </div>
 
 </div>
 
 <script>
-  // Gestión de la selección de radio buttons
   let opcionSeleccionada = false;
   function seleccionar(radio) {
     document.getElementById('card-activo').classList.remove('selected');
@@ -220,13 +221,11 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
     validarFormulario();
   }
 
-  // Gestión del Canvas (Firma)
   const canvas = document.getElementById('firmaPad');
   const ctx = canvas.getContext('2d');
   let dibujando = false;
   let firmaRealizada = false;
 
-  // Ajustar tamaño del canvas real a CSS
   function resizeCanvas() {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
@@ -238,28 +237,22 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
-  // Eventos PC
   canvas.addEventListener('mousedown', startDraw);
   canvas.addEventListener('mousemove', draw);
   canvas.addEventListener('mouseup', stopDraw);
   canvas.addEventListener('mouseout', stopDraw);
 
-  // Eventos Móvil (Touch)
   canvas.addEventListener('touchstart', (e) => {
     e.preventDefault(); 
     const touch = e.touches[0];
-    const mouseEvent = new MouseEvent("mousedown", {
-      clientX: touch.clientX, clientY: touch.clientY
-    });
+    const mouseEvent = new MouseEvent("mousedown", { clientX: touch.clientX, clientY: touch.clientY });
     canvas.dispatchEvent(mouseEvent);
   }, {passive: false});
   
   canvas.addEventListener('touchmove', (e) => {
     e.preventDefault();
     const touch = e.touches[0];
-    const mouseEvent = new MouseEvent("mousemove", {
-      clientX: touch.clientX, clientY: touch.clientY
-    });
+    const mouseEvent = new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY });
     canvas.dispatchEvent(mouseEvent);
   }, {passive: false});
   
@@ -267,10 +260,7 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
 
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
   }
 
   function startDraw(e) {
@@ -289,10 +279,7 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
     validarFormulario();
   }
 
-  function stopDraw() {
-    dibujando = false;
-    ctx.closePath();
-  }
+  function stopDraw() { dibujando = false; ctx.closePath(); }
 
   function limpiarFirma() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -302,15 +289,13 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
 
   function validarFormulario() {
     const btn = document.getElementById('btnEnviar');
-    if (opcionSeleccionada && firmaRealizada) {
-      btn.disabled = false;
-    } else {
-      btn.disabled = true;
-    }
+    btn.disabled = !(opcionSeleccionada && firmaRealizada);
   }
 
-  // Procesamiento falso / Efecto consola al enviar
   function procesarFirma() {
+    // 🔴 LÍNEA CLAVE PARA LA TARJETA NFC: GUARDA LA DECISIÓN EN EL MÓVIL
+    localStorage.setItem('final_german', 'vessalin');
+
     const overlay = document.getElementById('overlay');
     const term = document.getElementById('term-text');
     overlay.classList.add('active');
@@ -332,17 +317,14 @@ canvas {width: 100%; height: 200px; cursor: crosshair; touch-action: none; displ
         const p = document.createElement('div');
         p.className = 'term-line';
         p.innerText = linea;
-        if(index === lineas.length - 1) p.style.color = "#fff"; // Última línea en blanco
-        if(index === lineas.length - 3) p.style.color = "#fbbf24"; // Alerta en amarillo
+        if(index === lineas.length - 1) p.style.color = "#fff";
+        if(index === lineas.length - 3) p.style.color = "#fbbf24";
         term.appendChild(p);
       }, delay);
-      delay += 900; // Tiempo entre cada línea
+      delay += 900;
     });
 
-    // Lanzar la notificación Push un par de segundos después de que termine la terminal
-    setTimeout(() => {
-      document.getElementById('pushNotif').classList.add('show');
-    }, delay + 1500);
+    setTimeout(() => { document.getElementById('pushNotif').classList.add('show'); }, delay + 1500);
   }
 </script>
 </body>
